@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MC corner list generator</title>
+    <style>
+        body {
+            background: rgb(238,174,202);
+            background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
+            font-family: Arial, Helvetica, sans-serif;
+
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            background-color: rgba(19, 89, 150, 0.363);
+            padding-bottom: 30px;
+        }
+        .main-h1 {
+            text-align: center;
+        }
+
+        .inputCorner {
+            margin-top: 3em;
+        }
+
+         label{
+            margin-left: 0.5em;
+            margin-bottom: 0.1em;
+            font-size: medium;
+            font-weight: bold;
+            text-align: left;
+            display: block;
+        }
+
+        .inputCorner input {
+
+            padding: 5px;
+            margin-bottom: 1em;
+            margin-left: 1em;
+            width: 80%;
+        }
+
+        .MCnumber input {
+            padding: 5px;
+            margin-bottom: 1em;
+            margin-left: 1em;
+            width: 20%;
+        }
+        .div-butt {
+            margin-left: 1em;
+            margin-bottom: 1em;
+        }
+
+        .div-butt button {
+            display: inline;
+            margin-right: 1em ;
+            font-size: 18px;
+        }
+
+        .clearButt {
+            display: inline;
+        }
+        .clearButt input {
+            display: inline;
+            font-size: 15px;
+            max-width: 60px;
+            font-size: 15px;
+            font-weight: bold;
+            
+        }
+        .div-result {
+            font-family: monospace;
+            padding: 20px;
+            background-color: rgba(177, 218, 253, 0.932);
+            width: 90%;
+            height: 300px;
+            overflow: auto;
+            margin: auto;
+            
+        }
+        .div-result p {
+            padding: 1em;
+            background-color: antiquewhite;
+            display: block;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="main-h1">MC corner list generator</h1>
+        <form class="main-form">
+            <div class="inputCorner">
+                <label for="refCornerList">Referance corner</label>
+                <input type="text" id="refCornerList" name="refCornerList" onkeypress="return noenter(event)" placeholder="Enter the corner over which you want to run MC sim (e.g. tech  CORNER  res_t  mos_tt ... vptx_typ  vp_typ  t_typ  0  lpe_rcnom)">
+            <div class="clearButt">
+                <input  type="reset" value="Clear">
+            </div>
+            </div>
+            <div class="MCnumber">
+                <label for="MCrun">Number of MC runs</label>
+                <input type="number" id="MCrun" name="MCrun" value=330 min=2 max=999999 onkeypress="return noenter(event)">
+            </div>
+            <div class="div-butt">
+                <button type="button" onclick="printResults('outputP');">Generate</button>
+                <button type="button" onclick="clearAll('outputP');">Clear All</button>
+                <button type="button" onclick="copyText('outputP');">Copy Result To Clipboard </button>
+            </div>
+        </form>
+        <div class="div-result">
+            <p id="outputP">
+                The result will appear here.
+            </p>
+        </div>
+    </div>
+    <script class="disable-enter-for-input">
+        function noenter(e) {
+            e = e || window.event;
+            var key = e.keyCode || e.charCode;
+            return key !== 13; 
+        }
+    </script>
+    <script class="get-input-text">
+        function getInputValue(xid) {
+            const inputVal = document.getElementById(xid).value;
+            return inputVal;
+            //alert(inputVal);
+        }
+
+        function genCornerIist() {
+            return getInputValue('refCornerList');
+        }
+
+        function printResults(xid){
+            const count = parseInt(getInputValue('MCrun'));
+            const rawCorner = genCornerIist();
+            
+            const pval  = new Array(count).fill(1).map((el, i, ar) => `${rawCorner} ${(i+1).toString()}`.concat('\n'));
+            document.getElementById(xid).innerText = pval.join('');
+        } 
+
+        function clearAll(xid){
+            document.getElementById(xid).innerText = '';
+        }
+
+        function copyText(xid){
+            const range = document.createRange();
+            range.selectNode(document.getElementById(xid));
+            window.getSelection().removeAllRanges(); // clear current selection
+            window.getSelection().addRange(range); // to select text
+            document.execCommand("copy");
+            window.getSelection().removeAllRanges();// to deselect
+            alert('The text has been copied to clipboard')
+        }
+
+   </script>
+</body>
+</html>
